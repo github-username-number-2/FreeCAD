@@ -81,8 +81,8 @@ const std::list<gp_Trsf> LinearPattern::getTransformations(const std::vector<App
     gp_Trsf trans;
     transformations.push_back(trans); // identity transformation
     
-    // Allow occurences of only 1
-    if (distance == 0 && occurences == 0)
+    // Allow occurences of only 1 and do nothing
+    if (occurrences == 0)
         return transformations;
     
     if (distance < Precision::Confusion())
