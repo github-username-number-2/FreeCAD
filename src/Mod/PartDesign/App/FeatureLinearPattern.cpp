@@ -73,9 +73,20 @@ short LinearPattern::mustExecute() const
 const std::list<gp_Trsf> LinearPattern::getTransformations(const std::vector<App::DocumentObject*>)
 {
     double distance = Length.getValue();
+    int occurrences = Occurrences.getValue();
+    
+    // Note: The original feature is NOT included in the list of transformations! Therefore
+    // we start with occurrence number 1, not number 0
+    std::list<gp_Trsf> transformations;
+    gp_Trsf trans;
+    transformations.push_back(trans); // identity transformation
+    
+    // Allow occurences of only 1
+    if (distance == 0 && occurences == 0)
+        return transformations;
+    
     if (distance < Precision::Confusion())
         throw Base::ValueError("Pattern length too small");
-    int occurrences = Occurrences.getValue();
     if (occurrences < 1)
         throw Base::ValueError("At least one occurrence required");
     bool reversed = Reversed.getValue();
@@ -172,12 +183,6 @@ const std::list<gp_Trsf> LinearPattern::getTransformations(const std::vector<App
 
     if (reversed)
         direction.Reverse();
-
-    // Note: The original feature is NOT included in the list of transformations! Therefore
-    // we start with occurrence number 1, not number 0
-    std::list<gp_Trsf> transformations;
-    gp_Trsf trans;
-    transformations.push_back(trans); // identity transformation
 
     if (occurrences > 1) {
         double offset = distance / (occurrences - 1);
